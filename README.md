@@ -164,7 +164,7 @@ Datos     → data/products.json
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <https://github.com/dar003/EEH-Perfumes-Cat-logo-y-Tienda-Web.git>
+git clone https://github.com/dar003/EEH-Perfumes-Cat-logo-y-Tienda-Web.git
 cd EveryEssenceHouse
 ```
 
