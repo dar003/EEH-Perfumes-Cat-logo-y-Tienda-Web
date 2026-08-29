@@ -1,4 +1,5 @@
-# 🧴 EveryEssenceHouse
+#  EveryEssenceHouse
+## 🧴
 
 <p align="center">
   <strong>Catálogo interactivo y tienda web de perfumes</strong><br>
