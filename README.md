@@ -32,7 +32,7 @@
 
 ![Preview del carrito de compras](docs/screenshots/cart.png)
 
-> Estas imágenes son previews locales basados en la interfaz actual del proyecto y están pensados para funcionar directamente dentro del repositorio de GitHub.
+> Estas imágenes son previews locales basados en la interfaz actual del proyecto y están pensados para funcionar exactamente como se muestran los ejemplos.
 
 ---
 
@@ -164,7 +164,7 @@ Datos     → data/products.json
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone <https://github.com/dar003/EEH-Perfumes-Cat-logo-y-Tienda-Web.git>
 cd EveryEssenceHouse
 ```
 
