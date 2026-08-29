@@ -236,7 +236,7 @@ const categories = ["Todos", "Hombre", "Mujer", "Unisex", "Fresco", "Noche", "D�
         let isFixedHeaderVisible = false;
 
         // Configura aquí tu número de WhatsApp con código de país, sin + ni espacios.
-        // Ejemplo: 584121234567
+        // Ejemplo: 123456789012
         const SHIPPING_COST = 5.99;
         const DISCOUNT_AMOUNT = 0;
 
