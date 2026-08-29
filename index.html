@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EveryEssenceHouse.com.ve</title>
+    <meta name="description" content="Tienda de perfumes con los mejores productos y ofertas">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="swipe-left-zone" id="swipeLeftZone"></div>
+    <div class="swipe-right-zone" id="swipeRightZone"></div>
+    
+    <div id="productModal" class="product-modal-overlay" onclick="closeProductModal()">
+        <div class="product-modal" onclick="event.stopPropagation()">
+            <div class="product-modal-header">
+                <h2>Detalles del Producto</h2>
+                <button class="product-modal-close" onclick="closeProductModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="product-modal-content">
+                <div class="product-modal-slideshow-container">
+                    <div class="product-slideshow">
+                        <div class="slideshow-track" id="modalSlideshowTrack">
+                            <!-- Las imágenes del slideshow se insertarán aquí -->
+                        </div>
+                        <button class="slideshow-nav-btn slideshow-nav-left" onclick="changeModalSlide(-1)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <button class="slideshow-nav-btn slideshow-nav-right" onclick="changeModalSlide(1)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                        <div class="slideshow-indicators" id="modalSlideshowIndicators">
+                            <!-- Los indicadores se insertarán aquí -->
+                        </div>
+                    </div>
+                    <div class="slideshow-thumbnails" id="modalSlideshowThumbnails">
+                        <!-- Las miniaturas se insertarán aquí -->
+                    </div>
+                </div>
+
+                <div class="product-modal-basic-info">
+                    <h3 id="modalProductName" class="product-modal-title"></h3>
+                    <p id="modalProductBrand" class="product-modal-brand"></p>
+                    <div id="modalProductGender" class="modal-gender-container"></div>
+                </div>
+
+                <div class="product-modal-price-section">
+                    <span id="modalProductCurrentPrice" class="modal-current-price"></span>
+                    <span id="modalProductOldPrice" class="modal-old-price"></span>
+                </div>
+
+                <div class="product-modal-rating">
+                    <div id="modalProductRating" class="modal-rating-stars"></div>
+                    <span id="modalProductReviews" class="modal-rating-text"></span>
+                </div>
+
+                <div class="product-modal-section">
+                    <h4 class="modal-section-title">Perfil Olfativo</h4>
+                    <p id="modalProductProfile" class="modal-section-content"></p>
+                </div>
+
+                <div class="product-modal-section">
+                    <h4 class="modal-section-title">Notas</h4>
+                    <div id="modalProductNotes" class="modal-notes-list"></div>
+                </div>
+
+                <div class="product-modal-section">
+                    <h4 class="modal-section-title">Detalles</h4>
+                    <div class="modal-details-grid">
+                        <div class="modal-detail-item">
+                            <span class="modal-detail-label">Longevidad</span>
+                            <span id="modalProductLongevity" class="modal-detail-value"></span>
+                        </div>
+                        <div class="modal-detail-item">
+                            <span class="modal-detail-label">Uso Recomendado</span>
+                            <span id="modalProductUsage" class="modal-detail-value"></span>
+                        </div>
+                        <div class="modal-detail-item">
+                            <span class="modal-detail-label">Temporada</span>
+                            <span id="modalProductSeason" class="modal-detail-value"></span>
+                        </div>
+                        <div class="modal-detail-item">
+                            <span class="modal-detail-label">Concentración</span>
+                            <span id="modalProductConcentration" class="modal-detail-value"></span>
+                        </div>
+                        <div class="modal-detail-item">
+                            <span class="modal-detail-label">Tamaño</span>
+                            <span id="modalProductSize" class="modal-detail-value"></span>
+                        </div>
+                        <div class="modal-detail-item">
+                            <span class="modal-detail-label">Categoría</span>
+                            <span id="modalProductCategory" class="modal-detail-value"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="product-modal-actions">
+                <button id="modalToggleFavorite" class="modal-action-btn modal-favorite-btn" onclick="toggleFavoriteFromModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                    </svg>
+                    <span id="modalFavoriteText">Añadir a Favoritos</span>
+                </button>
+                <button id="modalToggleCart" class="modal-action-btn modal-cart-btn" onclick="toggleCartFromModal()">
+                    <span id="modalCartText">Añadir a la Bolsa</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lightbox para imágenes expandidas -->
+    <div id="imageLightbox" class="image-lightbox-overlay" onclick="closeImageLightbox()">
+        <div class="image-lightbox-container" onclick="event.stopPropagation()">
+            <button class="lightbox-close-btn" onclick="closeImageLightbox()">×</button>
+            <div class="lightbox-main-image-container">
+                <img id="lightboxMainImage" class="lightbox-main-image" src="" alt="">
+                <button class="lightbox-nav-btn lightbox-prev-btn" onclick="changeLightboxImage(-1)">‹</button>
+                <button class="lightbox-nav-btn lightbox-next-btn" onclick="changeLightboxImage(1)">›</button>
+                <div id="lightboxImageCounter" class="lightbox-image-counter"></div>
+            </div>
+            <div class="lightbox-thumbnails-container" id="lightboxThumbnailsContainer">
+                <!-- Miniaturas para la lightbox se insertarán aquí -->
+            </div>
+        </div>
+    </div>
+    
+    <div id="scrollToTop" class="scroll-to-top" onclick="scrollToTop()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </div>
+    
+    <div id="app" class="app-container">
+        <div id="fixedHeader" class="fixed-header">
+            <button class="menu-hamburger-btn" onclick="openMenu()">
+                <span class="menu-hamburger-line"></span>
+                <span class="menu-hamburger-line"></span>
+                <span class="menu-hamburger-line"></span>
+            </button>
+            
+            <div class="fixed-header-logo">
+                <img src="https://ugc.production.linktr.ee/f5976f61-edaf-4463-be20-cb9aece790c5_EEH---LOGO--WHITE.png" 
+                     alt="EEH Logo" 
+                     class="fixed-header-logo-image">
+            </div>
+            
+            <div class="fixed-header-icons">
+                <button class="header-icon-btn" onclick="focusSearch()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.3-4.3"/>
+                    </svg>
+                </button>
+                
+                <button class="header-icon-btn relative" onclick="openWishlist()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                    </svg>
+                    <div id="fixedWishlistBadge" class="wishlist-badge hidden">0</div>
+                </button>
+                
+                <button class="header-icon-btn relative" onclick="openCart()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <div id="fixedCartBadge" class="cart-badge hidden">0</div>
+                </button>
+            </div>
+        </div>
+        
+        <header id="mainHeader" class="header-gradient px-4">
+            <button class="menu-hamburger-btn" style="position: absolute; top: 30px; left: 24px;" onclick="openMenu()">
+                <span class="menu-hamburger-line"></span>
+                <span class="menu-hamburger-line"></span>
+                <span class="menu-hamburger-line"></span>
+            </button>
+            
+            <div class="header-icons-top-right">
+                <button class="header-icon-btn relative" onclick="openWishlist()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                    </svg>
+                    <div id="wishlistBadge" class="wishlist-badge hidden">0</div>
+                </button>
+                
+                <button class="header-icon-btn relative" onclick="openCart()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <div id="cartBadge" class="cart-badge hidden">0</div>
+                </button>
+            </div>
+            
+            <div class="logo-container">
+                <div class="logo-circle">
+                    <img src="https://ugc.production.linktr.ee/f5976f61-edaf-4463-be20-cb9aece790c5_EEH---LOGO--WHITE.png" 
+                         alt="EEH Logo" 
+                         class="logo-image">
+                </div>
+            </div>
+            
+            <div class="header-text-left">
+                <p class="text-white/90 text-sm font-medium">Bienvenido a</p>
+                <h1 class="text-white text-2xl font-bold mt-1">EveryEssenceHouse</h1>
+            </div>
+        </header>
+        
+        <div id="homeView" class="view">
+            <main class="white-section">
+                <div class="content-container">
+                    <div id="searchContainer" class="search-container">
+                        <div id="searchBar" class="search-bar px-4 py-3 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 search-icon">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.3-4.3"/>
+                            </svg>
+                            <input type="text" id="searchInput" placeholder="Buscar perfumes, artí ..." class="flex-1 bg-transparent border-none outline-none px-3 text-gray-700 placeholder:text-gray-400 text-sm focus:outline-none focus:text-gray-700">
+                            <button class="transition-colors p-1" onclick="alert('Búsqueda por voz - En desarrollo')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="voice-icon">
+                                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                    <line x1="12" x2="12" y1="19" y2="22"/>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <div id="searchFiltersPanel" class="search-filters-panel">
+                            <div class="filter-options">
+                                <button class="filter-option" onclick="showToast('Búsqueda Avanzada - En desarrollo')">
+                                    <div class="filter-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="11" cy="11" r="8"/>
+                                            <path d="m21 21-4.3-4.3"/>
+                                            <path d="M11 8v6"/>
+                                            <path d="M8 11h6"/>
+                                        </svg>
+                                    </div>
+                                    <span>Búsqueda Avanzada</span>
+                                </button>
+                                <button class="filter-option" onclick="showToast('Buscar por notas - En desarrollo')">
+                                    <div class="filter-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+                                            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+                                        </svg>
+                                    </div>
+                                    <span>Buscar por notas</span>
+                                </button>
+                                <button class="filter-option" onclick="showToast('Buscador de Perfume - En desarrollo')">
+                                    <div class="filter-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 2C8 2 4 6 4 10c0 6 8 12 8 12s8-6 8-12c0-4-4-8-8-8z"/>
+                                            <path d="M12 6v4"/>
+                                            <path d="M10 10h4"/>
+                                        </svg>
+                                    </div>
+                                    <span>Buscador de Perfume</span>
+                                </button>
+                                <button class="filter-option" onclick="showToast('Tendencias - En desarrollo')">
+                                    <div class="filter-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+                                        </svg>
+                                    </div>
+                                    <span>Tendencias</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-1">
+                        <div id="categoryFilter" class="flex gap-3 overflow-x-auto pb-3 scrollbar-hide">
+                        </div>
+                    </div>
+                    
+                    <div class="product-grid-container">
+                        <h2 class="product-grid-title text-xl font-bold">Línea Odyssey de Armaf</h2>
+                        
+                        <div id="productGrid" class="product-grid-2cols">
+                        </div>
+                        
+                        <div id="noResults" class="hidden no-results-container">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-gray-300">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.3-4.3"/>
+                                <path d="M8 8l6 6"/>
+                                <path d="M14 8l-6 6"/>
+                            </svg>
+                            <p class="font-medium text-gray-600">No se encontraron productos</p>
+                            <p class="text-sm mt-2 text-gray-400">Intenta con otro término de búsqueda</p>
+                        </div>
+                    </div>
+                    
+                    <div class="nav-spacer"></div>
+                </div>
+            </main>
+        </div>
+        
+        <div id="discoverView" class="view hidden">
+            <main class="white-section">
+                <div class="content-container">
+                    <div id="discoverSectionsContainer" class="discover-sections-container">
+                    </div>
+                    
+                    <div class="nav-spacer"></div>
+                </div>
+            </main>
+        </div>
+        
+        <div id="cartPageView" class="view hidden">
+            <main class="white-section">
+                <div class="cart-page-container">
+                    <h1 class="cart-page-title">Tu Bolsa de Compras</h1>
+                    <p class="cart-page-subtitle" id="cartPageSubtitle">0 productos en tu bolsa</p>
+                    
+                    <div id="cartPageItemsContainer" class="cart-page-items-container">
+                    </div>
+                    
+                    <div id="cartPageSummary" class="cart-page-summary hidden">
+                        <div class="summary-row">
+                            <span class="summary-label">Subtotal</span>
+                            <span id="cartPageSubtotal" class="summary-value">$0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Envío</span>
+                            <span id="cartPageShipping" class="summary-value">$5.99</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Descuento</span>
+                            <span id="cartPageDiscount" class="summary-value">$0.00</span>
+                        </div>
+                        <div class="summary-row summary-total">
+                            <span>Total</span>
+                            <span id="cartPageTotal">$0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div id="cartPageActions" class="cart-page-actions hidden">
+                        <button class="action-btn empty-cart-btn" onclick="emptyCart()">
+                            Vaciar Bolsa
+                        </button>
+                        <button class="action-btn continue-shopping-btn" onclick="goToHome()">
+                            Seguir Comprando
+                        </button>
+                        <button class="action-btn checkout-page-btn" onclick="checkoutFromPage()">
+                            Proceder al Pago
+                        </button>
+                    </div>
+                    
+                    <div id="emptyCartPage" class="empty-cart-page">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="empty-cart-icon">
+                            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <path d="M16 10a4 4 0 0 1-8 0"></path>
+                        </svg>
+                        <h3 class="text-xl font-bold text-gray-700 mb-2">Tu bolsa está vacía</h3>
+                        <p class="text-gray-500 mb-6">Añade algunos productos para continuar</p>
+                        <button class="action-btn checkout-page-btn" onclick="goToHome()">
+                            Explorar Productos
+                        </button>
+                    </div>
+                    
+                    <div class="nav-spacer"></div>
+                </div>
+            </main>
+        </div>
+        
+        <div id="wishlistPageView" class="view hidden">
+            <main class="white-section">
+                <div class="wishlist-page-container">
+                    <h1 class="wishlist-page-title">Tu Lista de Deseos</h1>
+                    <p class="wishlist-page-subtitle" id="wishlistPageSubtitle">0 productos en tu lista</p>
+                    
+                    <div id="wishlistPageItemsContainer" class="wishlist-page-items-container">
+                    </div>
+                    
+                    <div id="emptyWishlistPage" class="empty-wishlist-page">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="empty-wishlist-icon">
+                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                        </svg>
+                        <h3 class="text-xl font-bold text-gray-700 mb-2">Tu lista está vacía</h3>
+                        <p class="text-gray-500 mb-6">Añade productos a favoritos para verlos aquí</p>
+                        <button class="action-btn checkout-page-btn" onclick="goToHome()">
+                            Explorar Productos
+                        </button>
+                    </div>
+                    
+                    <div class="nav-spacer"></div>
+                </div>
+            </main>
+        </div>
+        
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 shadow-lg z-50">
+            <div class="flex items-center justify-around max-w-md mx-auto" id="bottomNav">
+            </div>
+        </nav>
+    </div>
+
+    <div id="menuOverlay" class="menu-overlay" onclick="closeMenu()"></div>
+    <div id="menuSidebar" class="menu-sidebar">
+        <div class="menu-header">
+            <h2 class="text-xl font-bold">Menú</h2>
+            <button class="menu-close-btn" onclick="closeMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="menu-profile-info">
+                <div class="menu-profile-logo">
+                    <img src="https://ugc.production.linktr.ee/f5976f61-edaf-4463-be20-cb9aece790c5_EEH---LOGO--WHITE.png" 
+                         alt="Logo" 
+                         class="menu-profile-logo-image">
+                </div>
+                <div>
+                    <p class="text-white/80 text-sm">Bienvenido a</p>
+                    <p class="text-white font-bold mt-1">EveryEssenceHouse</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="menu-section">
+            <h3 class="menu-section-title">Navegación Principal</h3>
+            <a href="#" class="menu-item" onclick="handleMenuItemClick(event, 'Inicio')">
+                <div class="menu-item-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                </div>
+                Inicio
+            </a>
+            <div class="menu-item has-submenu" onclick="toggleBrandsSubmenu(this)">
+                <div class="menu-item-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="7" height="7" x="3" y="3" rx="1"/>
+                        <rect width="7" height="7" x="14" y="3" rx="1"/>
+                        <rect width="7" height="7" x="14" y="14" rx="1"/>
+                        <rect width="7" height="7" x="3" y="14" rx="1"/>
+                    </svg>
+                </div>
+                Marcas
+                <svg class="submenu-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </div>
+            <div class="submenu" id="brandsSubmenu">
+            </div>
+            <div class="menu-item has-submenu" onclick="toggleBuildKitSubmenu(this)">
+                <div class="menu-item-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-hand-click"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 0 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7l-.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" /><path d="M5 3l-1 -1" /><path d="M4 7h-1" /><path d="M14 3l1 -1" /><path d="M15 6h1" /></svg>
+                </div>
+                Arma Tu Kit
+                <svg class="submenu-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </div>
+            <div class="submenu" id="buildKitSubmenu">
+            </div>
+            <div class="menu-item has-submenu" onclick="toggleDiscoverySubmenu(this)">
+                <div class="menu-item-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                    </svg>
+                </div>
+                Sets de Descubrimiento
+                <svg class="submenu-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </div>
+            <div class="submenu" id="discoverySubmenu">
+            </div>
+        </div>
+        
+        <div class="menu-section">
+            <h3 class="menu-section-title">Personalización</h3>
+            <a href="#" class="menu-item" onclick="goToDiscoverFromMenu('trending')">
+                <div class="menu-item-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+                    </svg>
+                </div>
+                Tendencias
+            </a>
+            <a href="#" class="menu-item" onclick="goToDiscoverFromMenu('unisex')">
+                <div class="menu-item-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-gender-bigender"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 11a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M19 3l-5 5" /><path d="M15 3h4v4" /><path d="M11 16v6" /><path d="M8 19h6" /></svg>
+                </div>
+                Fragancias Unisex
+            </a>
+        </div>
+        
+        <div class="menu-section">
+            <h3 class="menu-section-title">Soporte</h3>
+            <a href="#" class="menu-item" onclick="handleMenuItemClick(event, 'Contáctanos')">
+                <div class="menu-item-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                </div>
+                Contáctanos
+            </a>
+            <a href="#" class="menu-item" onclick="handleMenuItemClick(event, 'Sobre Nosotros')">
+                <div class="menu-item-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 16v-4"/>
+                        <path d="M12 8h.01"/>
+                    </svg>
+                </div>
+                Sobre Nosotros
+            </a>
+            <a href="#" class="menu-item" onclick="handleMenuItemClick(event, 'Rastrea Tu Pedido')">
+                <div class="menu-item-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-map-pin-share"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" /><path d="M12.02 21.485a1.996 1.996 0 0 1 -1.433 -.585l-4.244 -4.243a8 8 0 1 1 13.403 -3.651" /><path d="M16 22l5 -5" /><path d="M21 21.5v-4.5h-4.5" /></svg>
+                </div>
+                Rastrea Tu Pedido
+            </a>
+        </div>
+        
+        <div class="menu-section">
+            <h3 class="menu-section-title">Cuenta</h3>
+            <a href="#" class="menu-item" onclick="handleMenuItemClick(event, 'Ajustes')">
+                <div class="menu-item-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                </div>
+                Ajustes
+            </a>
+            <a href="#" class="menu-item" onclick="handleMenuItemClick(event, 'Cerrar Sesión')">
+                <div class="menu-item-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                </div>
+                Cerrar Sesión
+            </a>
+        </div>
+    </div>
+
+    <div id="cartOverlay" class="cart-overlay" onclick="closeCart()"></div>
+    <div id="cartSidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h2 class="text-xl font-bold">Tu Bolsa</h2>
+            <button class="cart-close-btn" onclick="closeCart()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="cart-profile-info">
+                <div class="cart-profile-logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-white/80 text-sm">Tu bolsa de</p>
+                    <p class="text-white font-bold mt-1">Compras</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cart-section">
+            <h3 class="cart-section-title">Productos en tu bolsa</h3>
+            <div id="cartItemsContainer">
+            </div>
+            <div id="emptyCartMessage" class="cart-empty">
+                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+                <p class="font-medium text-gray-600">Tu bolsa está vacía</p>
+                <p class="text-sm mt-2 text-gray-400">Añade algunos productos para continuar</p>
+            </div>
+        </div>
+        
+        <div class="cart-summary">
+            <div class="cart-total">
+                <span class="cart-total-label">Total:</span>
+                <span id="cartTotalPrice" class="cart-total-price">$0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">
+                Proceder al Pago
+            </button>
+        </div>
+    </div>
+
+    <div id="wishlistOverlay" class="wishlist-overlay" onclick="closeWishlist()"></div>
+    <div id="wishlistSidebar" class="wishlist-sidebar">
+        <div class="wishlist-header">
+            <h2 class="text-xl font-bold">Tu Lista de Deseos</h2>
+            <button class="wishlist-close-btn" onclick="closeWishlist()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="wishlist-profile-info">
+                <div class="wishlist-profile-logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-white/80 text-sm">Tu lista de</p>
+                    <p class="text-white font-bold mt-1">Deseos</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="wishlist-section">
+            <h3 class="wishlist-section-title">Productos en tu lista</h3>
+            <div id="wishlistItemsContainer">
+            </div>
+            <div id="emptyWishlistMessage" class="wishlist-empty">
+                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                </svg>
+                <p class="font-medium text-gray-600">Tu lista de deseos está vacía</p>
+                <p class="text-sm mt-2 text-gray-400">Añade algunos productos a favoritos</p>
+            </div>
+        </div>
+        
+        <div class="wishlist-summary">
+            <button class="checkout-btn" onclick="closeWishlist()">
+                Continuar Comprando
+            </button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast-mobile fixed bottom-24 left-1/2 transform -translate-x-1/2 text-white transition-all duration-300 opacity-0 pointer-events-none z-50">
+        <span id="toastMessage"></span>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+</html>
