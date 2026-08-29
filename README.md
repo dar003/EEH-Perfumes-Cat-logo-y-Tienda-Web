@@ -1,5 +1,4 @@
-#  EveryEssenceHouse
-## 🧴
+#  EveryEssenceHouse.com.ve 🧴
 
 <p align="center">
   <strong>Catálogo interactivo y tienda web de perfumes</strong><br>
